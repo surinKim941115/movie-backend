@@ -1,0 +1,40 @@
+service: movieBackend
+
+provider:
+  name: aws
+  timeout: 300 # optional, default is 6
+  role: arn:aws:iam::249842155296:role/lambda-s3-execution-role
+  runtime: python3.6
+  region: ap-northeast-2
+  profile: surin
+  environment:
+    TZ: Asia/Seoul
+    PYTHONPATH: ":/opt:/var/task/vendor"
+
+
+package:
+  exclude:
+    - .idea/**
+    - .vscode/**
+    - .serverless/**
+    - .git/**
+    - Pipfile*
+    - node_modules/**
+    - apidoc/**
+    - apidoc.*
+    - event/**
+    - package*
+    - README.md
+    - serverless.yml
+    - requirements.txt
+    - '**/**.pyc'
+    - '**/**/**.pyc'  # vendor
+
+
+functions:
+  get_popular_data:
+    handler: src/get_popular_data.run
+    events:
+        - http:
+            path: /popular_data
+            method: get
