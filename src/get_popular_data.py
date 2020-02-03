@@ -17,7 +17,7 @@ class GetPopularData:
 
     def main(self):
         select_query = """
-            SELECT tmdb_id, title, poster_path, release_date
+            SELECT tmdb_id, title, poster_path, backdrop_path, overview,  release_date
             FROM popular_movie
         """
 
