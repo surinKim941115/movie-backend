@@ -1,9 +1,5 @@
-import os
-import sys
 import json
-# here = os.path.dirname(os.path.realpath(__file__))
-# sys.path.append(os.path.join(here, "vendor"))
-print(sys.path)
+
 from helper.connect_db import get_connection
 
 
@@ -13,6 +9,7 @@ class GetPopularData:
         self.cursor = self.conn.cursor()
 
     def __del__(self):
+        self.cursor.close()
         self.conn.close()
 
     def main(self):

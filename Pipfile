@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 boto3 = "*"
 pymysql = "*"
+numpy = "*"
+pandas = "*"
 
 [requires]
 python_version = "3.6"
