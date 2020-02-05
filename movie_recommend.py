@@ -11,10 +11,12 @@ class GetMovieRecommend:
     def __init__(self):
         self.conn = get_connection()
         self.cursor = self.conn.cursor()
+        print("init 완료")
 
     def __del__(self):
         self.cursor.close()
         self.conn.close()
+        print("del")
 
     def pearsonR(self, s1, s2):
 
@@ -51,7 +53,14 @@ class GetMovieRecommend:
 
     def main(self, title):
         meta = pd.read_sql("select * from movie_meta", con=self.conn)
-        ratings = pd.read_sql("select * from ratings", con=self.conn)
+        print("여기 meta 완료")
+        print(meta)
+
+        try:
+            ratings = pd.read_sql("select * from ratings", con=self.conn)
+        except:
+            print("rating 에러")
+
         print(meta)
         print(ratings)
 

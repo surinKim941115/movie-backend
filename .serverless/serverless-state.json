@@ -1,0 +1,458 @@
+{
+  "service": {
+    "service": "movieBackend",
+    "serviceObject": {
+      "name": "movieBackend"
+    },
+    "provider": {
+      "stage": "dev",
+      "variableSyntax": "\\${([ ~:a-zA-Z0-9._@'\",\\-\\/\\(\\)*]+?)}",
+      "name": "aws",
+      "timeout": 300,
+      "role": "arn:aws:iam::249842155296:role/lambda-s3-execution-role",
+      "runtime": "python3.6",
+      "region": "ap-northeast-2",
+      "profile": "surin",
+      "environment": {
+        "TZ": "Asia/Seoul",
+        "PYTHONPATH": ":/opt:/var/task/vendor"
+      },
+      "versionFunctions": true,
+      "remoteFunctionData": null,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "GetUnderscorepopularUnderscoredataLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/movieBackend-dev-get_popular_data"
+            }
+          },
+          "InvokeUnderscoremovieUnderscorerecommendLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/movieBackend-dev-invoke_movie_recommend"
+            }
+          },
+          "GetUnderscorepopularUnderscoredataLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/movieBackend/dev/1580911383979-2020-02-05T14:03:03.979Z/movieBackend.zip"
+              },
+              "FunctionName": "movieBackend-dev-get_popular_data",
+              "Handler": "src/get_popular_data.run",
+              "MemorySize": 1024,
+              "Role": "arn:aws:iam::249842155296:role/lambda-s3-execution-role",
+              "Runtime": "python3.6",
+              "Timeout": 300,
+              "Environment": {
+                "Variables": {
+                  "TZ": "Asia/Seoul",
+                  "PYTHONPATH": ":/opt:/var/task/vendor"
+                }
+              }
+            },
+            "DependsOn": [
+              "GetUnderscorepopularUnderscoredataLogGroup"
+            ]
+          },
+          "GetUnderscorepopularUnderscoredataLambdaVersionONe5ReWHoIR0EZgsbWOMVql5U3tzjiWyklNqnh4": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetUnderscorepopularUnderscoredataLambdaFunction"
+              },
+              "CodeSha256": "ge9uTxkGw/RYcckvSTZ0RXL8pobTpLIOiKMHpBfp8Ss="
+            }
+          },
+          "InvokeUnderscoremovieUnderscorerecommendLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/movieBackend/dev/1580911383979-2020-02-05T14:03:03.979Z/movieBackend.zip"
+              },
+              "FunctionName": "movieBackend-dev-invoke_movie_recommend",
+              "Handler": "invoke_movie_recommend.run",
+              "MemorySize": 1024,
+              "Role": "arn:aws:iam::249842155296:role/lambda-s3-execution-role",
+              "Runtime": "python3.6",
+              "Timeout": 300,
+              "Environment": {
+                "Variables": {
+                  "TZ": "Asia/Seoul",
+                  "PYTHONPATH": ":/opt:/var/task/vendor"
+                }
+              }
+            },
+            "DependsOn": [
+              "InvokeUnderscoremovieUnderscorerecommendLogGroup"
+            ]
+          },
+          "InvokeUnderscoremovieUnderscorerecommendLambdaVersionk9GFkQzWJYsi7qvBTxokxJvcBFmkINuaT2POKtnqm7c": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "InvokeUnderscoremovieUnderscorerecommendLambdaFunction"
+              },
+              "CodeSha256": "ge9uTxkGw/RYcckvSTZ0RXL8pobTpLIOiKMHpBfp8Ss="
+            }
+          },
+          "ApiGatewayRestApi": {
+            "Type": "AWS::ApiGateway::RestApi",
+            "Properties": {
+              "Name": "dev-movieBackend",
+              "EndpointConfiguration": {
+                "Types": [
+                  "EDGE"
+                ]
+              }
+            }
+          },
+          "ApiGatewayResourcePopulardata": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "popular_data",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceInvokemovierecommend": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "invoke_movie_recommend",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodPopulardataGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourcePopulardata"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "GetUnderscorepopularUnderscoredataLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayMethodInvokemovierecommendGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceInvokemovierecommend"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "InvokeUnderscoremovieUnderscorerecommendLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
+          "ApiGatewayDeployment1580911380184": {
+            "Type": "AWS::ApiGateway::Deployment",
+            "Properties": {
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "StageName": "dev"
+            },
+            "DependsOn": [
+              "ApiGatewayMethodPopulardataGet",
+              "ApiGatewayMethodInvokemovierecommendGet"
+            ]
+          },
+          "GetUnderscorepopularUnderscoredataLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetUnderscorepopularUnderscoredataLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "InvokeUnderscoremovieUnderscorerecommendLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "InvokeUnderscoremovieUnderscorerecommendLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          },
+          "GetUnderscorepopularUnderscoredataLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetUnderscorepopularUnderscoredataLambdaVersionONe5ReWHoIR0EZgsbWOMVql5U3tzjiWyklNqnh4"
+            }
+          },
+          "InvokeUnderscoremovieUnderscorerecommendLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "InvokeUnderscoremovieUnderscorerecommendLambdaVersionk9GFkQzWJYsi7qvBTxokxJvcBFmkINuaT2POKtnqm7c"
+            }
+          },
+          "ServiceEndpoint": {
+            "Description": "URL of the service endpoint",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "ApiGatewayRestApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  },
+                  "/dev"
+                ]
+              ]
+            }
+          }
+        }
+      },
+      "coreCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "The AWS CloudFormation template for this Serverless application",
+        "Resources": {
+          "ServerlessDeploymentBucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketEncryption": {
+                "ServerSideEncryptionConfiguration": [
+                  {
+                    "ServerSideEncryptionByDefault": {
+                      "SSEAlgorithm": "AES256"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": {
+              "Ref": "ServerlessDeploymentBucket"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "pluginsData": {},
+    "functions": {
+      "get_popular_data": {
+        "handler": "src/get_popular_data.run",
+        "events": [
+          {
+            "http": {
+              "path": "popular_data",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "movieBackend-dev-get_popular_data",
+        "package": {},
+        "memory": 1024,
+        "timeout": 300,
+        "runtime": "python3.6",
+        "vpc": {}
+      },
+      "invoke_movie_recommend": {
+        "handler": "invoke_movie_recommend.run",
+        "events": [
+          {
+            "http": {
+              "path": "invoke_movie_recommend",
+              "method": "get",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "movieBackend-dev-invoke_movie_recommend",
+        "package": {},
+        "memory": 1024,
+        "timeout": 300,
+        "runtime": "python3.6",
+        "vpc": {}
+      }
+    },
+    "serviceFilename": "serverless.yml",
+    "layers": {},
+    "artifact": "/Users/kimsurin/Desktop/2020_folder/movie-backend/.serverless/movieBackend.zip"
+  },
+  "package": {
+    "artifactDirectoryName": "serverless/movieBackend/dev/1580911383979-2020-02-05T14:03:03.979Z",
+    "artifact": "movieBackend.zip"
+  }
+}

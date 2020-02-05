@@ -38,3 +38,10 @@ functions:
         - http:
             path: /popular_data
             method: get
+
+  invoke_movie_recommend:
+    handler: invoke_movie_recommend.run
+    events:
+        - http:
+            path: /invoke_movie_recommend
+            method: get
