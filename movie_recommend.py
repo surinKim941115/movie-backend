@@ -18,6 +18,15 @@ class GetMovieRecommend:
         self.conn.close()
         print("del")
 
+    def parse_genres(self, genres_str):
+        genres = json.loads(genres_str.replace('\'', '"'))
+
+        genres_list = []
+        for g in genres:
+            genres_list.append(g['name'])
+
+        return genres_list
+
     def pearsonR(self, s1, s2):
 
         s1_c = s1 - s1.mean()
@@ -57,12 +66,11 @@ class GetMovieRecommend:
         print(meta)
 
         try:
-            ratings = pd.read_sql("select * from ratings", con=self.conn)
+            ratings = pd.read_sql("select * from ratins_small", con=self.conn)
         except:
             print("rating 에러")
 
-        print(meta)
-        print(ratings)
+        print("import 끝")
 
         meta = meta[['id', 'original_title', 'original_language', 'genres']]
         meta = meta.rename(columns={'id': 'movieId'})
@@ -71,6 +79,7 @@ class GetMovieRecommend:
         meta.movieId = pd.to_numeric(meta.movieId, errors='coerce')
         ratings.movieId = pd.to_numeric(ratings.movieId, errors='coerce')
 
+        print("그 다음도 끝")
         meta['genres'] = meta['genres'].apply(self.parse_genres)
         meta.head()
 
